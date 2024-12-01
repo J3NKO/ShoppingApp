@@ -1,5 +1,5 @@
 import express from 'express';
-import bcrytp from 'bcrypt';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserModel } from "../models/Users.js";
 
@@ -12,25 +12,62 @@ router.post("/register", async (req, res)=>{
 
     const {username, password} = req.body;
 
-    console.log("Searching for user:", username);
+    //console.log("Searching for user:", username);
 
-    const user = await UserModel.find();
+    const user = await UserModel.findOne({username});
     
-    console.log("Request body:", req.body);
+    //console.log("Request body:", req.body);
 
+    if(user){
 
+      return res.json({message: "Username already exists!"});
 
-    if (!user) {
+    }
+    /*if (!user) {
         return res.status(404).json({ message: "User not found" });
-      }
+      }*/
+    
 
-    res.json(user);
+    //hashing of password 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new UserModel({
+      username, password : hashedPassword
+    });
+
+    newUser.save();
+
+        
+    res.json({message: "Account Registered Successfully!"});
 
 });
 
 
 //Post route for logging in
-router.post("/login");
+router.post("/login", async (req, res)=>{
+
+  const {username, password} = req.body;
+  const user = await UserModel.findOne({username});
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      //using bcrypt to compare passwords and return boolean result
+      const isPassValid = await bcrypt.compare(password, user.password);
+
+      if(!isPassValid){
+
+        return res.json({message: "Username or Password is Incorrect"}); 
+
+      }
+
+      //json web token
+      const token = jwt.sign({id: user._id}, process.env.SECRET);
+
+      res.json({token, userID: user._id})
+
+});
 
 
 //exporting and renaming router for users

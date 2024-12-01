@@ -9,4 +9,5 @@ const UserSchema = new mongoose.Schema({
 });
 
 //Users collection, exporting so reachable to db calls
+//Creating model with mongoose
 export const UserModel = mongoose.model("users", UserSchema);

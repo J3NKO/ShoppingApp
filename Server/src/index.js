@@ -23,11 +23,10 @@ app.use("/auth", userRouter);
 //conecting mongoose db
 // template string: mongoose.connect("mongodb+srv://callumjenko:<db_password>@shoppingapp.gbqto.mongodb.net/?retryWrites=true&w=majority&appName=ShoppingApp")
 //mongoose.connect(`mongodb+srv://callumjenko:${process.env.DB_PASSWORD}@shoppingapp.gbqto.mongodb.net/?retryWrites=true&w=majority&appName=ShoppingApp`)
-mongoose.connect(`mongodb+srv://callumjenko:${process.env.DB_PASSWORD}@shoppingapp.gbqto.mongodb.net/?retryWrites=true&w=majority&appName=ShoppingApp`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected"))
+mongoose.connect(`mongodb+srv://callumjenko:${process.env.DB_PASSWORD}@shoppingapp.gbqto.mongodb.net/shoppingapp?retryWrites=true&w=majority&appName=ShoppingApp`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB connection error:", err));
   
 
