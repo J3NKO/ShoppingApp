@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+//import DB data/docuemnt model
 import { UserModel } from "../models/Users.js";
 
 

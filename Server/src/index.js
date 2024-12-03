@@ -5,7 +5,7 @@ import dotenv from 'dotenv'; //env credneitals
 
 import { userRouter } from './routes/users.js';
 
-//check
+
 
 dotenv.config();
 
@@ -17,12 +17,12 @@ app.use(express.json());//convert data to json from client
 
 app.use(cors());// for api requests across origins
 
-// /auth endpoint will point towards the user file.js
+// /auth endpoint will be used as first part or uri for /login & /register requests from users.js
 app.use("/auth", userRouter);
 
 //conecting mongoose db
 // template string: mongoose.connect("mongodb+srv://callumjenko:<db_password>@shoppingapp.gbqto.mongodb.net/?retryWrites=true&w=majority&appName=ShoppingApp")
-//mongoose.connect(`mongodb+srv://callumjenko:${process.env.DB_PASSWORD}@shoppingapp.gbqto.mongodb.net/?retryWrites=true&w=majority&appName=ShoppingApp`)
+
 mongoose.connect(`mongodb+srv://callumjenko:${process.env.DB_PASSWORD}@shoppingapp.gbqto.mongodb.net/shoppingapp?retryWrites=true&w=majority&appName=ShoppingApp`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
