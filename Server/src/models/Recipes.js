@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-const RecipeSchema = new mongoose.schema({
+const RecipeSchema = new mongoose.Schema({
 
     name : {type: String,
         required : true
@@ -24,10 +24,12 @@ const RecipeSchema = new mongoose.schema({
 
     }], 
     instructions: {
+        
         type: String, 
         required : true
     },
     totalFibre : {
+
         type : String
     },
     cookingTime : {
@@ -45,6 +47,12 @@ const RecipeSchema = new mongoose.schema({
 
         type : Number,
         required : true
+
+    },
+    imageURL : {
+
+        type : String,
+        required : true        
 
     }
 
