@@ -15,10 +15,12 @@ const app = express();
 //middleware set up
 app.use(express.json());//convert data to json from client
 
-app.use(cors());// for api requests across origins
 
-// /auth endpoint will be used as first part or uri for /login & /register requests from users.js
+app.use(cors());// for api requests across machine origins
+
 app.use("/auth", userRouter);
+
+
 
 //conecting mongoose db
 // template string: mongoose.connect("mongodb+srv://callumjenko:<db_password>@shoppingapp.gbqto.mongodb.net/?retryWrites=true&w=majority&appName=ShoppingApp")

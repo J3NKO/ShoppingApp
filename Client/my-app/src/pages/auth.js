@@ -11,6 +11,7 @@ export const Auth = () => {
 
         <Login></Login>
         <Register></Register>
+        
     </div>
     
 
