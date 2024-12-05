@@ -14,15 +14,22 @@ const RecipeSchema = new mongoose.Schema({
         required : true
 
     },
-    ingredients : [{
-
-        type: String,
-        required : true,
-        IsVeg : Boolean,
-        Fibre : String
-
-
-    }], 
+    ingredients: [
+    {
+        type: {
+            type: String, 
+            required: true
+        },
+        IsVeg: {
+            type: Boolean,
+            required: true
+        },
+        Fibre: {
+            type: String,
+            required: true
+        }
+    }
+    ], 
     instructions: {
         
         type: String, 
@@ -30,7 +37,7 @@ const RecipeSchema = new mongoose.Schema({
     },
     totalFibre : {
 
-        type : String
+        type : Number
     },
     cookingTime : {
 
