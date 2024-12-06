@@ -16,7 +16,7 @@ const RecipeSchema = new mongoose.Schema({
     },
     ingredients: [
     {
-        type: {
+        name: {
             type: String, 
             required: true
         },
@@ -25,7 +25,7 @@ const RecipeSchema = new mongoose.Schema({
             required: true
         },
         Fibre: {
-            type: String,
+            type: Number,
             required: true
         }
     }
