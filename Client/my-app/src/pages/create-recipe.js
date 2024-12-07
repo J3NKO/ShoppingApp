@@ -2,12 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 
 export const CreateRecipe = () => {
-  // Set initial state for the recipe
+  // Seting initial state for the recipe
   const [recipe, setRecipe] = useState({
     name: "",
-    userOwner: window.localStorage.getItem("userID"), // This will be the ObjectId of the user
+    userOwner: window.localStorage.getItem("userID"), 
     ingredients: [
-      { name: "", IsVeg: false, Fibre: 0 }, // Ensure fields are initialized
+      { name: "", IsVeg: false, Fibre: 0 }, 
     ],
     instructions: "",
     totalFibre: 0,
@@ -23,7 +23,7 @@ export const CreateRecipe = () => {
      console.log("User ID found:", userID);
     } else {
        console.log("No user ID found. User might not be logged in.");
-    }
+    } 
 
 
   // Handle general input changes
@@ -44,11 +44,17 @@ export const CreateRecipe = () => {
   const handleIngredientChange = (event, index, field) => {
     const { value, type: inputType } = event.target;
     const updatedIngredients = [...recipe.ingredients];
-    updatedIngredients[index][field] =
-      inputType === "checkbox" ? event.target.checked : value;
+  
+    updatedIngredients[index][field] = 
+      inputType === "checkbox"
+        ? event.target.checked // Handle checkbox
+        : field === "Fibre"
+          ? Number(value) // Convert numeric fields
+          : value; // Default for strings
+  
     setRecipe({ ...recipe, ingredients: updatedIngredients });
   };
-
+  
   // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -75,35 +81,36 @@ export const CreateRecipe = () => {
 
         <label htmlFor="ingredients">Ingredients</label>
         {recipe.ingredients.map((ingredient, index) => (
-          <div key={index} className="ingredient">
-            <label htmlFor={`name-${index}`}>Name: </label>
-            <input
-              type="text"
-              id={`name-${index}`}
-              name={`name-${index}`}
-              value={ingredient.name}
-              onChange={(event) => handleIngredientChange(event, index, "name")}
-            />
+  <div key={index} className="ingredient">
+    <label htmlFor={`ingredient-name-${index}`}>Name: </label>
+    <input
+      type="text"
+      id={`ingredient-name-${index}`}
+      name="name"
+      value={ingredient.name}
+      onChange={(event) => handleIngredientChange(event, index, "name")}
+    />
 
-            <label htmlFor={`IsVeg-${index}`}> Vegetable?</label>
-            <input
-              type="checkbox"
-              id={`IsVeg-${index}`}
-              name={`IsVeg-${index}`}
-              checked={ingredient.IsVeg}
-              onChange={(event) => handleIngredientChange(event, index, "IsVeg")}
-            />
+    <label htmlFor={`ingredient-isVeg-${index}`}>Vegetable?</label>
+    <input
+      type="checkbox"
+      id={`ingredient-isVeg-${index}`}
+      name="isVeg"
+      checked={ingredient.IsVeg}
+      onChange={(event) => handleIngredientChange(event, index, "IsVeg")}
+    />
 
-            <label htmlFor={`Fibre-${index}`}>Fibre: </label>
-            <input
-              type="number"
-              id={`Fibre-${index}`}
-              name={`Fibre-${index}`}
-              value={ingredient.Fibre}
-              onChange={(event) => handleIngredientChange(event, index, "Fibre")}
-            />
-          </div>
-        ))}
+    <label htmlFor={`ingredient-fibre-${index}`}>Fibre: </label>
+    <input
+      type="number"
+      id={`ingredient-fibre-${index}`}
+      name="fibre"
+      value={ingredient.Fibre}
+      onChange={(event) => handleIngredientChange(event, index, "Fibre")}
+    />
+  </div>
+))}
+
         <button type="button" onClick={addIngredient}>
           Add Ingredient
         </button>
@@ -152,7 +159,7 @@ export const CreateRecipe = () => {
           onChange={handleChange}
         />
 
-        <label htmlFor="vegCount">Total Fibre</label>
+        <label htmlFor="totalFibre">Total Fibre</label>
         <input
           type="number"
           id="totalFibre"

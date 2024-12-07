@@ -9,67 +9,52 @@ import { UserModel } from "../models/Users.js";
 const router = express.Router();
 
 //post route for registering (sending log in data to db)
-router.post("/register", async (req, res)=>{
+router.post("/register", async (req, res) => {
+  const { username, password } = req.body;
 
-    const {username, password} = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required." });
+  }
 
-    //console.log("Searching for user:", username);
+  const user = await UserModel.findOne({ username });
+  if (user) {
+    return res.status(400).json({ message: "Username already exists!" });
+  }
 
-    const user = await UserModel.findOne({username});
-    
-    //console.log("Request body:", req.body);
+  const hashedPassword = await bcrypt.hash(password, 12);
 
-    if(user){
+  const newUser = new UserModel({
+    username,
+    password: hashedPassword,
+  });
 
-      return res.json({message: "Username already exists!"});
-
-    }
-    /*if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }*/
-    
-
-    //hashing of password 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new UserModel({
-      username, password : hashedPassword
-    });
-
-    newUser.save();
-
-        
-    res.json({message: "Account Registered Successfully!"});
-
+  await newUser.save();
+  res.status(201).json({ message: "Account Registered Successfully!" });
 });
 
+// Login Route
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
 
-//Post route for logging in
-router.post("/login", async (req, res)=>{
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required." });
+  }
 
-  
-  const {username, password} = req.body;
-  const user = await UserModel.findOne({username});
+  const user = await UserModel.findOne({ username });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
 
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+  const isPassValid = await bcrypt.compare(password, user.password);
+  if (!isPassValid) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
 
-      //using bcrypt to compare passwords and return boolean result
-      const isPassValid = await bcrypt.compare(password, user.password);
+  const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "1h" });
 
-      if(!isPassValid){
-
-        return res.json({message: "Username or Password is Incorrect"}); 
-
-      }
-
-      //json web token
-      const token = jwt.sign({id: user._id}, process.env.SECRET);
-
-      res.json({token, userID: user._id})
-
+  res.json({ token, UserID: user._id });
 });
+
 
 
 //exporting and renaming router for users
