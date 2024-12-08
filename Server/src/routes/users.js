@@ -28,6 +28,8 @@ router.post("/register", async (req, res) => {
     password: hashedPassword,
   });
 
+
+  
   await newUser.save();
   res.status(201).json({ message: "Account Registered Successfully!" });
 });

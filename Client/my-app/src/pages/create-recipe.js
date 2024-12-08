@@ -1,11 +1,17 @@
 import { useState } from "react";
 import axios from "axios";
+import { useGetUserID } from "../hooks/useGetUserID.js";
+import { useNavigate } from "react-router-dom";
 
 export const CreateRecipe = () => {
+
+  const userID = useGetUserID(); //self created hook
+  const navigate = useNavigate();
+
   // Seting initial state for the recipe
   const [recipe, setRecipe] = useState({
     name: "",
-    userOwner: window.localStorage.getItem("userID"), 
+    userOwner: userID, 
     ingredients: [
       { name: "", IsVeg: false, Fibre: 0 }, 
     ],
@@ -16,8 +22,6 @@ export const CreateRecipe = () => {
     vegCount: 0,
     imageURL: "",
   });
-
-  const userID = window.localStorage.getItem("userID");
 
     if (userID) {
      console.log("User ID found:", userID);
@@ -50,7 +54,7 @@ export const CreateRecipe = () => {
         ? event.target.checked // Handle checkbox
         : field === "Fibre"
           ? Number(value) // Convert numeric fields
-          : value; // Default for strings
+          : value; // Default for ints
   
     setRecipe({ ...recipe, ingredients: updatedIngredients });
   };
@@ -64,6 +68,8 @@ export const CreateRecipe = () => {
     } catch (err) {
       console.error(err);
     }
+
+    navigate("/home");
   };
 
   return (
