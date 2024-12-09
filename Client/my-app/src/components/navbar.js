@@ -3,7 +3,7 @@ import { useCookies } from "react-cookie";
 import { useState, useEffect } from "react";
 
 export const NavBar = () => {
-  const [cookies, setCookies, removeCookies] = useCookies("access_token");
+  const [cookies, setCookies, removeCookies] = useCookies(["access_token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
@@ -29,8 +29,11 @@ export const NavBar = () => {
       {/* NAVBAR LINKS TO MAIN PAGES */}
       <Link to="/home">Home</Link>
       <Link to="/create-recipe">Create Recipe</Link>
-      <Link to="/saved-recipes">Saved Recipes</Link>
+      
+      {/* Show Saved Recipes only when logged in */}
+      {isLoggedIn && <Link to="/saved-recipes">Saved Recipes</Link>}
       <Link to="/shopping-list">Shopping List</Link>
+      
       {/* Conditional rendering based on login state */}
       {!isLoggedIn ? (
         <Link to="/auth">Login/Register</Link>

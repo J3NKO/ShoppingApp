@@ -1,13 +1,14 @@
 import { RecipeModel } from "../models/Recipes.js";
 import express from "express";
 import mongoose from "mongoose";
-import { UserModel } from "../models/Users.js";
+import { UserModel } from "../models/Users.js"
+import { verifyToken } from "./users.js";
 
 //set up http routes for recipes model
 const router = express.Router();
 
 
-router.get("/", async(req, res) => {
+router.get("/", verifyToken,async(req, res) => {
 
     try{
 
@@ -25,7 +26,7 @@ router.get("/", async(req, res) => {
 
 
 //create new recipe
-router.post("/", async(req, res) => {
+router.post("/", verifyToken,async(req, res) => {
 
     //console.log({...req.body});
     //create an instance of the recipe
@@ -53,7 +54,7 @@ router.post("/", async(req, res) => {
 
 ///////////////////////////////////
 //save a recipe
-router.put("/", async(req, res) => {
+router.put("/", verifyToken,async(req, res) => {
 
     try{
 
@@ -80,7 +81,7 @@ router.put("/", async(req, res) => {
 
 
 //get recipe IDs from specific user
-router.get("/savedRecipes/ids/:userID", async (req, res) => {
+router.get("/savedRecipes/ids/:userID", verifyToken,async (req, res) => {
 
 try{
 
@@ -99,11 +100,11 @@ try{
 });
 
 //get saved recipes from specific user
-router.get("/savedRecipes", async (req, res) => {
+router.get("/savedRecipes/:userID", verifyToken,async (req, res) => {
 
     try{
     
-        const user = await UserModel.findById(req.body.userID);
+        const user = await UserModel.findById(req.params.userID);
         const savedRecipes = await RecipeModel.find({
 
             //mongoose 'in' query syntax

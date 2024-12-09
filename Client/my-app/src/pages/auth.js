@@ -101,7 +101,7 @@ const Register = () => {
 
         return <div className="auth-container">
         <form onSubmit={onSubmit}>
-        <h2>{label}</h2>
+        <h1>{label}</h1>
         <div className="form-group">
             <label htmlFor="username">Username: </label>
             <input type="text" id="username" onChange={(e) => {SetUsername(e.target.value)}}></input>

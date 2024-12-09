@@ -1,22 +1,23 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
-
+import {useCookies} from "react-cookie";
 
 export const Home = () => {
 
     const userID = useGetUserID();
     const [recipes, setRecipes] = useState([]);
     const [savedRecipes, setsavedRecipes] = useState([]);
+    const [cookies, _] = useCookies(["access_token"]);
 
     useEffect(() => {
 
         const fetchRecipe = async () => {
             
             try {
-                const response = await axios.get("http://localhost:3001/recipe");
+                const response = await axios.get("http://localhost:3001/recipe" , {headers: {Authorization: cookies.access_token}});
                 setRecipes(response.data);
-                console.log(response.data);
+                //console.log(response.data);
               } catch (err) {
                 console.error(err);
               }
@@ -27,8 +28,12 @@ export const Home = () => {
         const fetchSavedRecipes = async () => {
 
             try {
-                const response = await axios.get(`http://localhost:3001/recipe/savedRecipes/ids/${userID}`);
-                setsavedRecipes(response.data);
+                const response = await axios.get(`http://localhost:3001/recipe/savedRecipes/ids/${userID}`
+                    , {headers: {Authorization: cookies.access_token}}
+                );
+                const savedRecipesArray = Object.values(response.data).flat(); // Combine all arrays into a single array
+                setsavedRecipes(savedRecipesArray);
+                //console.log(savedRecipes);
               } catch (err) {
                 console.error(err);
               }
@@ -41,7 +46,6 @@ export const Home = () => {
         fetchSavedRecipes();
 
 
-        console.log(savedRecipes);
 
 
     }, []);
@@ -50,8 +54,11 @@ export const Home = () => {
     const saveRecipe = async (recipeID) => {
 
         try {
-            const response = await axios.put("http://localhost:3001/recipe", {userID, recipeID});
-            //console.log(response)
+            const response = await axios.put("http://localhost:3001/recipe", {userID, recipeID}
+                , {headers: {Authorization: cookies.access_token}}
+            );
+            //console.log(response.data)
+            setsavedRecipes(response.data.savedRecipes);
           } catch (err) {
             console.error(err);
           }
@@ -60,13 +67,15 @@ export const Home = () => {
     };
 
 
-    return <div><h2>Recipes</h2>
+    const isSaved = (id) => savedRecipes.includes(id);
+
+
+
+    return <div><h1>Recipes</h1>
 
     <ul>
         {recipes.map((recipe) => (
             <li key={recipe._id}>
-            {Array.isArray(savedRecipes) && savedRecipes.some(savedRecipe => savedRecipe._id === recipe._id) && <h2>SAVED</h2>}
-
                 <div>
                     <h2>{recipe.name}</h2>
                 </div>
@@ -78,7 +87,7 @@ export const Home = () => {
                 <p> Cooking Time: {recipe.cookingTime}</p>
                 <h3> Veg Count: {recipe.vegCount}</h3>
                 <h3> Fibre: {recipe.totalFibre}</h3>
-                <button onClick={() => saveRecipe(recipe._id)}> Save Recipe </button>
+                <button disabled={isSaved(recipe._id)} onClick={() => saveRecipe(recipe._id)}> {isSaved(recipe._id) ? "Recipe Saved" : "Save"} </button>
             </li>
         ))}
     </ul>

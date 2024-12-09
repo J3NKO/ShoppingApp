@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ message: "Invalid password" });
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, process.env.SECRET);
 
   res.json({ token, UserID: user._id });
 });
@@ -61,3 +61,28 @@ router.post("/login", async (req, res) => {
 
 //exporting and renaming router for users
 export {router as userRouter};
+
+
+
+//middleware auth using express 
+
+export const verifyToken = (req, res, next) => {
+
+    const token = req.headers.authorization
+    if(token){
+
+      jwt.verify(token, process.env.SECRET, (err)=> {
+
+        if (err) {return res.sendStatus(403)}
+        next();
+
+      });
+
+    }else {
+
+      res.sendStatus(401);
+
+    }
+
+
+}
