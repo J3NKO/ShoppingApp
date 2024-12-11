@@ -26,7 +26,7 @@ router.get("/", verifyToken,async(req, res) => {
 
 
 //create new recipe
-router.post("/", verifyToken,async(req, res) => {
+router.post("/", verifyToken, async(req, res) => {
 
     //console.log({...req.body});
     //create an instance of the recipe
@@ -80,7 +80,53 @@ router.put("/", verifyToken,async(req, res) => {
 });
 
 
-//get recipe IDs from specific user
+//save recipe to shopping list in User Document
+router.put("/shoppingList", verifyToken,async(req, res) => {
+
+    try{
+
+        //get recipe we want to save in User Collection
+        const recipe = await RecipeModel.findById(req.body.recipeID);
+        //get User
+        const user = await UserModel.findById(req.body.userID);
+    
+        //push new recipe to saved recipe in Users collection
+        user.shoppingList.push(recipe);
+
+        user.save();
+
+        //return object array of saved recipes
+        res.json({ShoppingList : user.shoppingList});
+
+
+    }catch(err){
+
+        res.json(err);
+
+    }
+});
+
+//get recipes from shopping list based on ID from logged in user
+router.get("/shoppingList/ids/:userID", verifyToken,async (req, res) => {
+
+    try{
+    
+        const user = await UserModel.findById(req.params.userID);
+    
+        res.json({shoppingList : user?.shoppingList})
+    
+    }catch(err){
+    
+        res.json(err);
+    
+    
+    }
+    
+});
+
+
+
+//get saved recipe from specific user
 router.get("/savedRecipes/ids/:userID", verifyToken,async (req, res) => {
 
 try{
@@ -99,7 +145,7 @@ try{
 
 });
 
-//get saved recipes from specific user
+//get saved recipes ID's from specific user
 router.get("/savedRecipes/:userID", verifyToken,async (req, res) => {
 
     try{
@@ -109,6 +155,32 @@ router.get("/savedRecipes/:userID", verifyToken,async (req, res) => {
 
             //mongoose 'in' query syntax
             _id : {$in : user.savedRecipes},
+
+
+        })
+
+        res.json(savedRecipes);
+    
+    }catch(err){
+    
+        res.json(err);
+    
+    
+    }
+    
+    
+    });
+
+//get shopping list recipe ID's from specific user
+router.get("/shoppingList/:userID", verifyToken,async (req, res) => {
+
+    try{
+    
+        const user = await UserModel.findById(req.params.userID);
+        const savedRecipes = await RecipeModel.find({
+
+            //mongoose 'in' query syntax
+            _id : {$in : user.shoppingList},
 
 
         })

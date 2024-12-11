@@ -20,7 +20,7 @@ export const Saved = () => {
                 const response = await axios.get(`http://localhost:3001/recipe/savedRecipes/${userID}` , {headers: {Authorization: cookies.access_token}});
                 const savedRecipesArray = Object.values(response.data).flat(); // Combine all arrays into a single array
                 setsavedRecipes(savedRecipesArray);
-                console.log(savedRecipes);
+                //console.log(savedRecipes);
               } catch (err) {
                 console.error(err);
               }

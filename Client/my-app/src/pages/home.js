@@ -9,6 +9,8 @@ export const Home = () => {
     const [recipes, setRecipes] = useState([]);
     const [savedRecipes, setsavedRecipes] = useState([]);
     const [cookies, _] = useCookies(["access_token"]);
+    const [shoppingList, setshoppingList] = useState([]); 
+
 
     useEffect(() => {
 
@@ -42,8 +44,28 @@ export const Home = () => {
         }
         
 
+        const fetchShoppingList = async () => {
+
+            try {
+                const response = await axios.get(`http://localhost:3001/recipe/shoppingList/ids/${userID}`
+                    , {headers: {Authorization: cookies.access_token}}
+                );
+                const shoppingList =  Object.values(response.data).flat(); // Combine all arrays into a single array
+                console.log("test");//print twice
+                console.log("test" + Object.values(response.data).flat());
+                setshoppingList(shoppingList);
+                console.log(shoppingList);
+              } catch (err) {
+                console.error(err);
+              }
+
+            
+        }
+
+
         fetchRecipe();
         fetchSavedRecipes();
+        fetchShoppingList();
 
 
 
@@ -66,8 +88,24 @@ export const Home = () => {
 
     };
 
+    const saveShoppingList = async (recipeID) => {
+
+        try {
+            const response = await axios.put("http://localhost:3001/recipe/shoppingList", {userID, recipeID}
+                , {headers: {Authorization: cookies.access_token}}
+            );
+            //console.log(response.data)
+            setshoppingList(response.data.shoppingList);
+          } catch (err) {
+            console.error(err);
+          }
+
+
+    };
+
 
     const isSaved = (id) => savedRecipes.includes(id);
+    const isSavedShoppingList = (id) => shoppingList.includes(id);
 
 
 
@@ -87,7 +125,8 @@ export const Home = () => {
                 <p> Cooking Time: {recipe.cookingTime}</p>
                 <h3> Veg Count: {recipe.vegCount}</h3>
                 <h3> Fibre: {recipe.totalFibre}</h3>
-                <button disabled={isSaved(recipe._id)} onClick={() => saveRecipe(recipe._id)}> {isSaved(recipe._id) ? "Recipe Saved" : "Save"} </button>
+                <button className="button" disabled={isSaved(recipe._id)} onClick={() => saveRecipe(recipe._id)}> {isSaved(recipe._id) ? "Recipe Saved" : "Save"} </button>
+                <button className="button" disabled={isSavedShoppingList(recipe._id)} onClick={() => saveShoppingList(recipe._id)}> {isSavedShoppingList(recipe._id) ? "Added to Shopping List" : "Add to Shopping List"} </button>
             </li>
         ))}
     </ul>

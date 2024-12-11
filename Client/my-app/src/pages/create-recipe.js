@@ -25,11 +25,13 @@ export const CreateRecipe = () => {
     imageURL: "",
   });
 
+
+  /*
     if (userID) {
      console.log("User ID found:", userID);
     } else {
        console.log("No user ID found. User might not be logged in.");
-    } 
+    } */
 
 
   // Handle general input changes
