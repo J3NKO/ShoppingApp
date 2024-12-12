@@ -7,8 +7,8 @@ import {useCookies} from "react-cookie";
 export const ShoppingList = () => {
 
     const userID = useGetUserID();
-    const [shoppingList, setshoppingList] = useState([]);
     const [cookies, _] = useCookies(["access_token"]);
+    const [shoppingList, setshoppingList] = useState([]);
 
     useEffect(() => {
 
@@ -17,10 +17,14 @@ export const ShoppingList = () => {
         const fetchShoppingList = async () => {
 
             try {
-                const response = await axios.get(`http://localhost:3001/recipe/shoppingList/${userID}` , {headers: {Authorization: cookies.access_token}});
-                const shoppingListArray = Object.values(response.data).flat(); // Combine all arrays into a single array
-                setshoppingList(shoppingListArray);
-                console.log(shoppingListArray);
+                const response = await axios.get(`http://localhost:3001/recipe/shoppingList/${userID}`
+                    , {headers: {Authorization: cookies.access_token}}
+                );
+                const updatedshoppingList =  response.data; 
+                //console.log("test" + Object.values(response.data).flat());
+                console.log(updatedshoppingList);
+                setshoppingList(updatedshoppingList);
+
               } catch (err) {
                 console.error(err);
               }
@@ -28,42 +32,37 @@ export const ShoppingList = () => {
             
         }
         
-
-
         fetchShoppingList();
-
-
-
 
     }, []);
 
 
 
-
-    return <div><h1>Shopping List</h1>
-
-    <ul>
-        {/*shoppingList.map((recipe) => (
-            <li key={recipe._id}>
-                <div>
-                    <h2>{recipe.name}</h2>
-                </div>
-                <div className="instructions">
-                    <p>{recipe.instructions}</p>
-                </div>
-                <img alt={recipe.name} src={recipe.imageURL} />
-                <p> Preperation Time: {recipe.prepTime}</p>
-                <p> Cooking Time: {recipe.cookingTime}</p>
-                <h3> Veg Count: {recipe.vegCount}</h3>
-                <h3> Fibre: {recipe.totalFibre}</h3>
-                
-            </li>
-        ))*/}
-    </ul>
-
-    
-    
-    </div>;
+    return (
+        <div>
+            <h1>Shopping List</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Recipe Name</th>
+                        <th>Ingredients</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {shoppingList.map((recipe) => (
+                        <tr key={recipe._id}>
+                            <td>{recipe.name}</td>
+                            <td>
+                                {recipe.ingredients.map((ingredient, index) => (
+                                    <div key={index}>{ingredient.name}</div> // Display each ingredient
+                                ))}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    )
 
 
 }

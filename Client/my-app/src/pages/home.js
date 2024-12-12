@@ -8,8 +8,8 @@ export const Home = () => {
     const userID = useGetUserID();
     const [recipes, setRecipes] = useState([]);
     const [savedRecipes, setsavedRecipes] = useState([]);
-    const [cookies, _] = useCookies(["access_token"]);
-    const [shoppingList, setshoppingList] = useState([]); 
+    const [shoppingList, setshoppingList] = useState([]);
+    const [cookies, _] = useCookies(["access_token"]); 
 
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export const Home = () => {
                 );
                 const savedRecipesArray = Object.values(response.data).flat(); // Combine all arrays into a single array
                 setsavedRecipes(savedRecipesArray);
-                //console.log(savedRecipes);
+               
               } catch (err) {
                 console.error(err);
               }
@@ -50,9 +50,10 @@ export const Home = () => {
                 const response = await axios.get(`http://localhost:3001/recipe/shoppingList/ids/${userID}`
                     , {headers: {Authorization: cookies.access_token}}
                 );
-                const shoppingList =  Object.values(response.data).flat(); // Combine all arrays into a single array
-                console.log("test");//print twice
-                console.log("test" + Object.values(response.data).flat());
+                const shoppingList =  response.data.shoppingList; 
+                console.log("shoppingList - " + shoppingList);//print twice
+                //console.log("test" + Object.values(response.data).flat());
+                console.log(shoppingList);
                 setshoppingList(shoppingList);
                 console.log(shoppingList);
               } catch (err) {
@@ -61,6 +62,7 @@ export const Home = () => {
 
             
         }
+        
 
 
         fetchRecipe();
@@ -71,6 +73,8 @@ export const Home = () => {
 
 
     }, []);
+
+    
 
 
     const saveRecipe = async (recipeID) => {
@@ -87,25 +91,35 @@ export const Home = () => {
 
 
     };
-
     const saveShoppingList = async (recipeID) => {
-
+        
         try {
-            const response = await axios.put("http://localhost:3001/recipe/shoppingList", {userID, recipeID}
-                , {headers: {Authorization: cookies.access_token}}
+            const response = await axios.put(
+                "http://localhost:3001/recipe/shoppingList",
+                { userID, recipeID },
+                { headers: { Authorization: cookies.access_token } }
             );
-            //console.log(response.data)
-            setshoppingList(response.data.shoppingList);
-          } catch (err) {
-            console.error(err);
-          }
+    
+            // Access the ShoppingList property
+            const updatedShoppingList = response.data.ShoppingList; // Correct key based on API response
 
-
+            if (updatedShoppingList) {
+                setshoppingList(updatedShoppingList); // Update the state with the new shopping list
+                console.log("Updated shopping list:", updatedShoppingList);
+            } else {
+                console.error("ShoppingList is undefined in API response");
+            }
+        } catch (err) {
+            console.error("Error saving shopping list:", err);
+        }
     };
+    
+    
 
 
     const isSaved = (id) => savedRecipes.includes(id);
-    const isSavedShoppingList = (id) => shoppingList.includes(id);
+
+    const isSavedShoppingList = (id) => Array.isArray(shoppingList) && shoppingList.includes(id);
 
 
 
