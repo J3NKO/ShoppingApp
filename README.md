@@ -10,3 +10,9 @@ Authentication/security will be seperated by a few technologies I think (client 
 1) Bycrpt for password hasing
 2) JsonWebTokens for auth (need to settle on expiration timeframe) 
 3) Protected middleware
+
+TODO:
+
+1) Style App
+2) Add in forgotten Password feature
+3) Add in remove button to both saved recipes and shopping list page
