@@ -38,6 +38,14 @@ export const Saved = () => {
     }, []);
 
 
+    const removeRecipe = (recipeID) => {
+
+        return;
+
+
+    }
+
+
 
 
     return <div><h1>Saved Recipes</h1>
@@ -56,7 +64,7 @@ export const Saved = () => {
                 <p> Cooking Time: {recipe.cookingTime}</p>
                 <h3> Veg Count: {recipe.vegCount}</h3>
                 <h3> Fibre: {recipe.totalFibre}</h3>
-                
+                <button>Remove Recipe</button>
             </li>
         ))}
     </ul>

@@ -101,7 +101,7 @@ export const Home = () => {
             );
     
             // Access the ShoppingList property
-            const updatedShoppingList = response.data.ShoppingList; // Correct key based on API response
+            const updatedShoppingList = response.data.ShoppingList; 
 
             if (updatedShoppingList) {
                 setshoppingList(updatedShoppingList); // Update the state with the new shopping list
@@ -121,6 +121,8 @@ export const Home = () => {
 
     const isSavedShoppingList = (id) => Array.isArray(shoppingList) && shoppingList.includes(id);
 
+
+    
 
 
     return <div><h1>Recipes</h1>

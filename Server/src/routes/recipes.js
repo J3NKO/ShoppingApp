@@ -199,4 +199,47 @@ router.get("/shoppingList/:userID", verifyToken,async (req, res) => {
 
 
 
+//remove recipe from Shopping list
+router.delete("/shoppingList", verifyToken, async (req, res) => {
+    try {
+        // Get the user
+        const user = await UserModel.findById(req.body.userID);
+
+        // Remove the recipe ID from the shopping list, convert OBjectID datat type to string to avoid error
+        user.shoppingList = user.shoppingList.filter(
+            (recipeID) => recipeID.toString() !== req.body.recipeID
+        );
+
+        await user.save();
+
+        // Return updated shopping list
+        res.json({ ShoppingList: user?.shoppingList });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+
+//remove recipe from Saved Recipes
+router.delete("/SavedRecipes", verifyToken, async (req, res) => {
+    try {
+        // Get the user
+        const user = await UserModel.findById(req.body.userID);
+
+        
+        user.savedRecipes = user.savedRecipes.filter(
+            (recipeID) => recipeID.toString() !== req.body.recipeID
+        );
+
+        await user.save();
+
+      
+        res.json({ savedRecipes: user?.savedRecipes });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+
+
 export {router as RecipeRouter};

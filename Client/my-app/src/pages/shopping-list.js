@@ -36,6 +36,13 @@ export const ShoppingList = () => {
 
     }, []);
 
+    const removeRecipe = (recipeID) => {
+
+        return;
+
+
+    }
+
 
 
     return (
@@ -53,9 +60,17 @@ export const ShoppingList = () => {
                         <tr key={recipe._id}>
                             <td>{recipe.name}</td>
                             <td>
-                                {recipe.ingredients.map((ingredient, index) => (
-                                    <div key={index}>{ingredient.name}</div> // Display each ingredient
-                                ))}
+                            {recipe.ingredients.map((ingredient, index) => (
+                                <div key={index}>
+                                    <label>
+                                        <input type="checkbox" />
+                                        {ingredient.name}
+                                    </label>
+                                </div>
+                            ))}
+                            </td>
+                            <td>
+                                <button>Remove Meal</button>
                             </td>
                         </tr>
                     ))}
