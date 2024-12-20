@@ -20,7 +20,7 @@ export const Saved = () => {
                 const response = await axios.get(`http://localhost:3001/recipe/savedRecipes/${userID}` , {headers: {Authorization: cookies.access_token}});
                 const savedRecipesArray = Object.values(response.data).flat(); // Combine all arrays into a single array
                 setsavedRecipes(savedRecipesArray);
-                console.log("saved rec" + savedRecipesArray);
+               
               } catch (err) {
                 console.error(err);
               }
@@ -29,18 +29,30 @@ export const Saved = () => {
         }
         
 
-
         fetchSavedRecipes();
 
 
 
 
-    }, []);
+    }, [savedRecipes]);
 
 
-    const removeRecipe = (recipeID) => {
+    const removeRecipe = async (recipeID) => {
 
-        return;
+        try{
+        
+            const response = await axios.delete(`http://localhost:3001/recipe/savedRecipes/${userID}/${recipeID}`, {headers: {Authorization: cookies.access_token}});
+            console.log(response);
+            const newSavedRecipes = response.data.savedRecipes;
+            console.log(newSavedRecipes);
+            setsavedRecipes(newSavedRecipes);
+
+
+        }catch(err){
+
+            console.log(err);
+
+        }
 
 
     }
@@ -59,12 +71,13 @@ export const Saved = () => {
                 <div className="instructions">
                     <p>{recipe.instructions}</p>
                 </div>
+            
                 <img alt={recipe.name} src={recipe.imageURL} />
                 <p> Preperation Time: {recipe.prepTime}</p>
                 <p> Cooking Time: {recipe.cookingTime}</p>
                 <h3> Veg Count: {recipe.vegCount}</h3>
                 <h3> Fibre: {recipe.totalFibre}</h3>
-                <button>Remove Recipe</button>
+                <button onClick={() => removeRecipe(recipe._id)}>Remove Recipe</button>
             </li>
         ))}
     </ul>

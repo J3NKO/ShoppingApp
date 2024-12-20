@@ -200,14 +200,14 @@ router.get("/shoppingList/:userID", verifyToken,async (req, res) => {
 
 
 //remove recipe from Shopping list
-router.delete("/shoppingList", verifyToken, async (req, res) => {
+router.delete("/shoppingList/:userID/:recipeID", verifyToken, async (req, res) => {
     try {
         // Get the user
-        const user = await UserModel.findById(req.body.userID);
+        const user = await UserModel.findById(req.params.userID);
 
         // Remove the recipe ID from the shopping list, convert OBjectID datat type to string to avoid error
         user.shoppingList = user.shoppingList.filter(
-            (recipeID) => recipeID.toString() !== req.body.recipeID
+            (recipeID) => recipeID.toString() !== req.params.recipeID
         );
 
         await user.save();
@@ -221,19 +221,19 @@ router.delete("/shoppingList", verifyToken, async (req, res) => {
 
 
 //remove recipe from Saved Recipes
-router.delete("/SavedRecipes", verifyToken, async (req, res) => {
+router.delete("/SavedRecipes/:userID/:recipeID", verifyToken, async (req, res) => {
     try {
         // Get the user
-        const user = await UserModel.findById(req.body.userID);
+        const user = await UserModel.findById(req.params.userID);
 
         
         user.savedRecipes = user.savedRecipes.filter(
-            (recipeID) => recipeID.toString() !== req.body.recipeID
+            (recipeID) => recipeID.toString() !== req.params.recipeID
         );
 
         await user.save();
 
-      
+        
         res.json({ savedRecipes: user?.savedRecipes });
     } catch (err) {
         res.status(500).json(err);

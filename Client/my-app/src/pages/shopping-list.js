@@ -22,7 +22,7 @@ export const ShoppingList = () => {
                 );
                 const updatedshoppingList =  response.data; 
                 //console.log("test" + Object.values(response.data).flat());
-                console.log(updatedshoppingList);
+                
                 setshoppingList(updatedshoppingList);
 
               } catch (err) {
@@ -31,17 +31,35 @@ export const ShoppingList = () => {
 
             
         }
+
         
         fetchShoppingList();
 
-    }, []);
+    }, [shoppingList]);
 
-    const removeRecipe = (recipeID) => {
+    
 
-        return;
+    const removeRecipe = async (recipeID) => {
+    
+            try{
+            
+                const response = await axios.delete(`http://localhost:3001/recipe/shoppingList/${userID}/${recipeID}`, {headers: {Authorization: cookies.access_token}});
+                console.log(response);
+                console.log(response.data.ShoppingList);
+                const newShoppingList = response.data.ShoppingList;
+                console.log(newShoppingList);
+                setshoppingList(newShoppingList);
+    
 
-
-    }
+    
+            }catch(err){
+    
+                console.log(err);
+    
+            }
+    
+    
+        }
 
 
 
@@ -56,25 +74,35 @@ export const ShoppingList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {shoppingList.map((recipe) => (
-                        <tr key={recipe._id}>
-                            <td>{recipe.name}</td>
-                            <td>
-                            {recipe.ingredients.map((ingredient, index) => (
-                                <div key={index}>
-                                    <label>
-                                        <input type="checkbox" />
-                                        {ingredient.name}
-                                    </label>
-                                </div>
-                            ))}
-                            </td>
-                            <td>
-                                <button>Remove Meal</button>
-                            </td>
-                        </tr>
-                    ))}
+                 {(shoppingList || []).length > 0 ? (
+                    shoppingList.map((recipe) => (
+                    <tr key={recipe._id}>
+                      <td>{recipe?.name || "Unnamed Recipe"}</td>
+
+                      <td>
+                        {(recipe?.ingredients || []).map((ingredient, index) => (
+                        <div key={index}>
+                            <label>
+                                <input type="checkbox" />
+                                {ingredient?.name || "Unnamed Ingredient"}
+                            </label>
+                        </div>
+                        ))}
+                      </td>
+
+                        <td>
+                        <button onClick={() => removeRecipe(recipe._id)}>Remove Meal</button>
+                        </td>
+
+                    </tr>
+                 ))) : (
+                <tr>
+                    <td colSpan="3">No recipes in your shopping list!</td>
+                </tr>
+                    )}
                 </tbody>
+
+
             </table>
         </div>
     )
