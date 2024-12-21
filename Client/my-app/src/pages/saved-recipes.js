@@ -9,10 +9,10 @@ export const Saved = () => {
     const userID = useGetUserID();
     const [savedRecipes, setsavedRecipes] = useState([]);
     const [cookies, _] = useCookies(["access_token"]);
+    const [sw1tch, setSw1tch] = useState(false); 
+
 
     useEffect(() => {
-
-
 
         const fetchSavedRecipes = async () => {
 
@@ -24,17 +24,32 @@ export const Saved = () => {
               } catch (err) {
                 console.error(err);
               }
-
-            
-        }
-        
+            }
 
         fetchSavedRecipes();
+    
+    }, []);
 
-
-
-
-    }, [savedRecipes]);
+    useEffect(() => {
+        
+        if (sw1tch) {
+            const fetchSavedRecipes = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:3001/recipe/savedRecipes/${userID}`, {
+                        headers: { Authorization: cookies.access_token },
+                    });
+                    const savedRecipesArray = Object.values(response.data).flat();
+                    setsavedRecipes(savedRecipesArray);
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+    
+            fetchSavedRecipes();
+            setSw1tch(false);
+        }
+    }, [sw1tch]);
+    
 
 
     const removeRecipe = async (recipeID) => {
@@ -46,6 +61,7 @@ export const Saved = () => {
             const newSavedRecipes = response.data.savedRecipes;
             console.log(newSavedRecipes);
             setsavedRecipes(newSavedRecipes);
+            setSw1tch(true);
 
 
         }catch(err){
