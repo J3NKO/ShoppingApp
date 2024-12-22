@@ -19,7 +19,7 @@ export const Home = () => {
             try {
                 const response = await axios.get("http://localhost:3001/recipe" , {headers: {Authorization: cookies.access_token}});
                 setRecipes(response.data);
-                //console.log(response.data);
+
               } catch (err) {
                 console.error(err);
               }
@@ -51,11 +51,9 @@ export const Home = () => {
                     , {headers: {Authorization: cookies.access_token}}
                 );
                 const shoppingList =  response.data.shoppingList; 
-                console.log("shoppingList - " + shoppingList);//print twice
-                //console.log("test" + Object.values(response.data).flat());
-                console.log(shoppingList);
+
                 setshoppingList(shoppingList);
-                console.log(shoppingList);
+
               } catch (err) {
                 console.error(err);
               }
@@ -83,7 +81,7 @@ export const Home = () => {
             const response = await axios.put("http://localhost:3001/recipe", {userID, recipeID}
                 , {headers: {Authorization: cookies.access_token}}
             );
-            //console.log(response.data)
+            
             setsavedRecipes(response.data.savedRecipes);
           } catch (err) {
             console.error(err);
@@ -105,7 +103,6 @@ export const Home = () => {
 
             if (updatedShoppingList) {
                 setshoppingList(updatedShoppingList); // Update the state with the new shopping list
-                console.log("Updated shopping list:", updatedShoppingList);
             } else {
                 console.error("ShoppingList is undefined in API response");
             }
