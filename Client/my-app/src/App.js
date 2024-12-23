@@ -6,6 +6,10 @@ import {CreateRecipe} from "./pages/create-recipe.js";
 import {ShoppingList} from "./pages/shopping-list.js";
 import {Saved} from "./pages/saved-recipes.js";
 import { NavBar } from './components/navbar.js';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
+
 
 function App() {
   return (
