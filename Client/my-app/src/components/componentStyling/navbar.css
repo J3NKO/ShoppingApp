@@ -1,12 +1,12 @@
 /* Mobile-specific styles */
 @media (max-width: 767px) {
-    .navbar-collapse {
+  .navbar-collapse {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(255, 226, 154, 0.9); /* Dark transparent background */
+      background-color: #007bff; /* Slightly transparent */
       z-index: 1050;
       display: flex;
       justify-content: center;
@@ -14,42 +14,49 @@
       text-align: center;
       opacity: 0; /* Start with hidden state */
       visibility: hidden; /* Make sure it's hidden initially */
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-  
-    .navbar-collapse.show {
+      transition:  visibility 0.3s ease;
+  }
+
+  .navbar-collapse.show {
       opacity: 1;
       visibility: visible; /* Show when active */
-    }
-  
-    .navbar-nav {
+  }
+
+
+
+  .navbar-nav {
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
-    }
-  
-    .nav-item {
+  }
+
+  .nav-item {
       width: 100%;
       margin: 10px 0;
-    }
-  
-    .nav-link {
+  }
+
+  .nav-link {
       color: white;
       font-size: 1.5rem;
       padding: 15px 0;
       width: 100%;
-    }
-  
-    .nav-link:hover {
+      cursor: pointer;
+  }
+
+  .nav-link:hover {
       background-color: #007bff;
       border-radius: 5px;
-    }
-  
-    /* Hide navbar-toggler on mobile */
-    .navbar-toggler {
-        display: block; /* Make sure it's visible on mobile */
-      }
-      
+  }
+
+  .navbar-toggler {
+      display: block; /* Make sure it's visible on mobile */
+      transition: transform 0.3s ease;
+  }
+
+  .navbar-toggler[aria-expanded="true"] {
+      transform: rotate(90deg); /* Rotate icon when expanded from selector */
   }
   
+  
+}
