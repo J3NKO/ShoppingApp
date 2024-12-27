@@ -3,6 +3,7 @@ import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import '../components/componentStyling/createRecipe.css';
 
 export const CreateRecipe = () => {
 
@@ -26,12 +27,7 @@ export const CreateRecipe = () => {
   });
 
 
-  /*
-    if (userID) {
-     console.log("User ID found:", userID);
-    } else {
-       console.log("No user ID found. User might not be logged in.");
-    } */
+
 
 
   // Handle general input changes
@@ -76,6 +72,14 @@ export const CreateRecipe = () => {
     navigate("/home");
   };
 
+  //remove an ingredient
+  const removeIngredient = (indexToRemove) => {
+    setRecipe({
+      ...recipe,
+      ingredients: recipe.ingredients.filter((_, index) => index !== indexToRemove)
+    });
+  };
+
   return (
     <div className="create-recipe">
       <h1>Create Recipe</h1>
@@ -91,35 +95,50 @@ export const CreateRecipe = () => {
 
         <label htmlFor="ingredients">Ingredients</label>
         {recipe.ingredients.map((ingredient, index) => (
-  <div key={index} className="ingredient">
-    <label htmlFor={`ingredient-name-${index}`}>Name: </label>
-    <input
-      type="text"
-      id={`ingredient-name-${index}`}
-      name="name"
-      value={ingredient.name}
-      onChange={(event) => handleIngredientChange(event, index, "name")}
-    />
+          <div key={index} className="ingredient">
+            <div>
+              <label htmlFor={`ingredient-name-${index}`}>Name:</label>
+              <input
+                type="text"
+                id={`ingredient-name-${index}`}
+                value={ingredient.name}
+                onChange={(event) => handleIngredientChange(event, index, "name")}
+              />
+            </div>
 
-    <label htmlFor={`ingredient-isVeg-${index}`}>Vegetable?</label>
-    <input
-      type="checkbox"
-      id={`ingredient-isVeg-${index}`}
-      name="isVeg"
-      checked={ingredient.IsVeg}
-      onChange={(event) => handleIngredientChange(event, index, "IsVeg")}
-    />
+            <div>
+              <label htmlFor={`ingredient-isVeg-${index}`}>Vegetable?</label>
+              <input
+                type="checkbox"
+                id={`ingredient-isVeg-${index}`}
+                checked={ingredient.IsVeg}
+                onChange={(event) => handleIngredientChange(event, index, "IsVeg")}
+              />
+            </div>
 
-    <label htmlFor={`ingredient-fibre-${index}`}>Fibre: </label>
-    <input
-      type="number"
-      id={`ingredient-fibre-${index}`}
-      name="fibre"
-      value={ingredient.Fibre}
-      onChange={(event) => handleIngredientChange(event, index, "Fibre")}
-    />
-  </div>
-))}
+            <div>
+              <label htmlFor={`ingredient-fibre-${index}`}>Fibre:</label>
+              <input
+                type="number"
+                id={`ingredient-fibre-${index}`}
+                value={ingredient.Fibre}
+                onChange={(event) => handleIngredientChange(event, index, "Fibre")}
+              />
+            </div>
+
+            {/* Only show remove button if there's more than one ingredient */}
+            {recipe.ingredients.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeIngredient(index)}
+                className="remove-ingredient-btn"
+                aria-label="Remove ingredient"
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
 
         <button type="button" onClick={addIngredient}>
           Add Ingredient

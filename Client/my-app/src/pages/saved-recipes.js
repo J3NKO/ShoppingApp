@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import {useCookies} from "react-cookie";
+import '../components/componentStyling/SavedRecipes.css';
 
 
 export const Saved = () => {
@@ -124,32 +125,55 @@ export const Saved = () => {
 
 
 
-    return <div><h1>Saved Recipes</h1>
-
-    <ul>
-        {savedRecipes.map((recipe) => (
-            <li key={recipe._id}>
-                <div>
-                    <h2>{recipe.name}</h2>
-                </div>
-                <div className="instructions">
-                    <p>{recipe.instructions}</p>
-                </div>
-            
-                <img alt={recipe.name} src={recipe.imageURL} />
-                <p> Preperation Time: {recipe.prepTime}</p>
-                <p> Cooking Time: {recipe.cookingTime}</p>
-                <h3> Veg Count: {recipe.vegCount}</h3>
-                <h3> Fibre: {recipe.totalFibre}</h3>
-                <button onClick={() => removeRecipe(recipe._id)}>Remove Recipe</button>
-                <button className="button" disabled={isSavedShoppingList(recipe._id)} onClick={() => saveShoppingList(recipe._id)}> {isSavedShoppingList(recipe._id) ? "Added to Shopping List" : "Add to Shopping List"} </button>
-            </li>
-        ))}
-    </ul>
-
-    
-    
-    </div>;
-
-
-}
+    return (
+        <div className="saved-recipes">
+            <h1>Saved Recipes</h1>
+            <ul className="recipes-grid">
+                {savedRecipes.map((recipe) => (
+                    <li key={recipe._id} className="recipe-card">
+                        <img className="recipe-image" alt={recipe.name} src={recipe.imageURL} />
+                        <div className="recipe-content">
+                            <h2 className="recipe-title">{recipe.name}</h2>
+                            <div className="recipe-instructions">
+                                <p>{recipe.instructions}</p>
+                            </div>
+                            <div className="recipe-meta">
+                                <div className="meta-item">
+                                    <div className="meta-label">Prep Time</div>
+                                    <div className="meta-value">{recipe.prepTime}</div>
+                                </div>
+                                <div className="meta-item">
+                                    <div className="meta-label">Cook Time</div>
+                                    <div className="meta-value">{recipe.cookingTime}</div>
+                                </div>
+                                <div className="meta-item">
+                                    <div className="meta-label">Veg Count</div>
+                                    <div className="meta-value">{recipe.vegCount}</div>
+                                </div>
+                                <div className="meta-item">
+                                    <div className="meta-label">Fibre</div>
+                                    <div className="meta-value">{recipe.totalFibre}</div>
+                                </div>
+                            </div>
+                            <div className="recipe-actions">
+                                <button 
+                                    className="recipe-button remove-button"
+                                    onClick={() => removeRecipe(recipe._id)}
+                                >
+                                    Remove Recipe
+                                </button>
+                                <button 
+                                    className="recipe-button shopping-list-button"
+                                    disabled={isSavedShoppingList(recipe._id)}
+                                    onClick={() => saveShoppingList(recipe._id)}
+                                >
+                                    {isSavedShoppingList(recipe._id) ? "Added to List" : "Add to List"}
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};

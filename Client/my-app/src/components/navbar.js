@@ -20,6 +20,11 @@ export const NavBar = () => {
     }
   }, [cookies.access_token]); // Run effect when cookies change
 
+  // Add this effect to reset menu state on route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [navigate]);
+
   // Logout method
   const logout = () => {
     removeCookies("access_token", { path: "/" }); // Remove the access_token cookie
@@ -52,7 +57,8 @@ export const NavBar = () => {
           className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
           id="navbarNav"
         >
-          {isMenuOpen && (
+          {/* Only show close button if menu is open AND screen is mobile */}
+          {isMenuOpen && window.innerWidth <= 767 && (
             <button
               className="btn btn-close btn-close-white ms-auto"
               onClick={toggleMenu}

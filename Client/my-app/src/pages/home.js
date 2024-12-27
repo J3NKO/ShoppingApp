@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import {useCookies} from "react-cookie";
+import '../components/componentStyling/home.css';
 
 export const Home = () => {
 
@@ -122,31 +123,62 @@ export const Home = () => {
     
 
 
-    return <div><h1>Recipes</h1>
-
-    <ul>
-        {recipes.map((recipe) => (
-            <li key={recipe._id}>
-                <div>
-                    <h2>{recipe.name}</h2>
-                </div>
-                <div className="instructions">
-                    <p>{recipe.instructions}</p>
-                </div>
-                <img alt={recipe.name} src={recipe.imageURL} />
-                <p> Preperation Time: {recipe.prepTime}</p>
-                <p> Cooking Time: {recipe.cookingTime}</p>
-                <h3> Veg Count: {recipe.vegCount}</h3>
-                <h3> Fibre: {recipe.totalFibre}</h3>
-                <button className="button" disabled={isSaved(recipe._id)} onClick={() => saveRecipe(recipe._id)}> {isSaved(recipe._id) ? "Recipe Saved" : "Save"} </button>
-                <button className="button" disabled={isSavedShoppingList(recipe._id)} onClick={() => saveShoppingList(recipe._id)}> {isSavedShoppingList(recipe._id) ? "Added to Shopping List" : "Add to Shopping List"} </button>
-            </li>
-        ))}
-    </ul>
-
-    
-    
-    </div>;
+    return (
+        <div className="recipes-container">
+            <h1 className="page-title">Recipes</h1>
+            <ul className="recipes-grid">
+                {recipes.map((recipe) => (
+                    <li key={recipe._id} className="recipe-card">
+                        <img 
+                            className="recipe-image" 
+                            alt={recipe.name} 
+                            src={recipe.imageURL}
+                        />
+                        <div className="recipe-content">
+                            <h2 className="recipe-title">{recipe.name}</h2>
+                            <div className="recipe-instructions">
+                                <p>{recipe.instructions}</p>
+                            </div>
+                            <div className="recipe-meta">
+                                <div className="recipe-stat">
+                                    <div>Prep Time</div>
+                                    <strong>{recipe.prepTime}</strong>
+                                </div>
+                                <div className="recipe-stat">
+                                    <div>Cook Time</div>
+                                    <strong>{recipe.cookingTime}</strong>
+                                </div>
+                                <div className="recipe-stat">
+                                    <div>Veg Count</div>
+                                    <strong>{recipe.vegCount}</strong>
+                                </div>
+                                <div className="recipe-stat">
+                                    <div>Fibre</div>
+                                    <strong>{recipe.totalFibre}</strong>
+                                </div>
+                            </div>
+                            <div className="recipe-buttons">
+                                <button 
+                                    className={`button save-button`}
+                                    disabled={isSaved(recipe._id)}
+                                    onClick={() => saveRecipe(recipe._id)}
+                                >
+                                    {isSaved(recipe._id) ? "Recipe Saved" : "Save"}
+                                </button>
+                                <button 
+                                    className={`button shopping-list-button`}
+                                    disabled={isSavedShoppingList(recipe._id)}
+                                    onClick={() => saveShoppingList(recipe._id)}
+                                >
+                                    {isSavedShoppingList(recipe._id) ? "Added to List" : "Add to List"}
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 
 
 }

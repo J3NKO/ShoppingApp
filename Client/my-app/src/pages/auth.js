@@ -3,8 +3,10 @@ import {useCookies} from "react-cookie";
 //using axios rather than nodes built in API fetching
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import '../components/componentStyling/auth.css';
 
 
+//changed jsx to return declared components below
 export const Auth = () => {
 
     return <div className="auth">

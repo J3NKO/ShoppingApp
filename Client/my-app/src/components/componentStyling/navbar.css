@@ -1,3 +1,8 @@
+/* Hide navbar-toggler by default for all screen sizes */
+.navbar-toggler {
+    display: none !important;
+}
+
 /* Mobile-specific styles */
 @media (max-width: 767px) {
   .navbar-collapse {
@@ -50,12 +55,12 @@
   }
 
   .navbar-toggler {
-      display: block; /* Make sure it's visible on mobile */
+      display: block !important; /* Show only on mobile */
       transition: transform 0.3s ease;
   }
 
   .navbar-toggler[aria-expanded="true"] {
-      transform: rotate(90deg); /* Rotate icon when expanded from selector */
+      transform: rotate(90deg);
   }
   
   
