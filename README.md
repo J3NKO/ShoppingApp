@@ -13,6 +13,19 @@ Authentication/security will be seperated by a few technologies I think (client 
 
 TODO:
 
-1) Style App
-2) Add in forgotten Password feature
-3) Add in remove button to both saved recipes and shopping list page
+1) Style App - Done
+2) Add in forgotten Password feature - Done
+3) Add in remove button to both saved recipes and shopping list page - Done
+
+--
+4) Add in a recipe search feature *
+5) Add in a shopping list search feature *
+
+I need to create search bar component in my react front end and then add it to the recipe and shopping list pages, ensuring correct state management and data flow. Then I need to add the search functionality to the backend, by adding a search route to the express server (API endpoint) and then adding the search functionality to the MongoDB queries. For optimal performance I will need to create a search index on the MongoDB collection to avoid full collection scans.
+--
+
+6) Add in a recipe and shopping list filter feature 
+7) Add in a recipe and shopping list sort feature
+8) Add in a recipe and shopping list pagination feature 
+9) Add in a recipe and shopping list recommendation feature 
+
