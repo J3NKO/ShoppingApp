@@ -3,6 +3,7 @@ import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import {useCookies} from "react-cookie";
 import '../components/componentStyling/home.css';
+import SearchBar from "../components/SearchBar.js";
 
 export const Home = () => {
 
@@ -11,6 +12,8 @@ export const Home = () => {
     const [savedRecipes, setsavedRecipes] = useState([]);
     const [shoppingList, setshoppingList] = useState([]);
     const [cookies, _] = useCookies(["access_token"]); 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
 
     useEffect(() => {
@@ -120,12 +123,34 @@ export const Home = () => {
     const isSavedShoppingList = (id) => Array.isArray(shoppingList) && shoppingList.includes(id);
 
 
+    // Search functionality passes data to the backend and updates the recipes state
+    const handleSearch = async (searchTerm) => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const response = await fetch(`/api/recipes/search?term=${searchTerm}`);
+          if (!response.ok) {
+            throw new Error('Search failed');
+          }
+          
+          const data = await response.json();
+          setRecipes(data);
+        } catch (err) {
+          setError('Failed to search recipes');
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
     
 
 
     return (
         <div className="recipes-container">
-            <h1 className="page-title">Recipes</h1>
+            <h1 className="page-title">RECIPES</h1>
+            <SearchBar onSearch={handleSearch} />
             <ul className="recipes-grid">
                 {recipes.map((recipe) => (
                     <li key={recipe._id} className="recipe-card">

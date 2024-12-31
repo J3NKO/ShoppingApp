@@ -20,7 +20,7 @@ export const NavBar = () => {
     }
   }, [cookies.access_token]); // Run effect when cookies change
 
-  // Add this effect to reset menu state on route changes
+  // UseEffect to reset menu state on route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [navigate]);

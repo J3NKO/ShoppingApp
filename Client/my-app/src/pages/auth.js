@@ -41,12 +41,12 @@ const Login = () => {
             const response = await axios.post("http://localhost:3001/auth/login", {
                 username, 
                 password
-            });
+            })
 
             setCookies("access_token", response.data.token);
             window.localStorage.setItem("userID", response.data.UserID)
 
-            navigate("/home");
+            navigate("/home")
 
         }catch(err) {
 

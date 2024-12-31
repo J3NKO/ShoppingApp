@@ -1,4 +1,4 @@
-/* Reset and base styles */
+/* base styles */
 * {
   margin: 0;
   padding: 0;
@@ -18,6 +18,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  position: relative;
 }
 
 /* Global container */
@@ -28,7 +30,7 @@ body {
   padding: 0 1rem;
 }
 
-/* Typography */
+
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
   line-height: 1.2;
@@ -72,5 +74,24 @@ a:hover {
 @media (max-width: 768px) {
   .container {
     padding: 0 0.5rem;
+  }
+}
+
+
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Add viewport-specific media query */
+@media screen and (max-width: 100vh) {
+  .container {
+    padding: 0 0.5rem;
+    min-height: -webkit-fill-available; /* For iOS */
+  }
+  
+  .App {
+    min-height: -webkit-fill-available;
   }
 }
