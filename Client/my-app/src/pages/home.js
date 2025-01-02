@@ -123,26 +123,25 @@ export const Home = () => {
     const isSavedShoppingList = (id) => Array.isArray(shoppingList) && shoppingList.includes(id);
 
 
-    // Search functionality passes data to the backend and updates the recipes state
+    // Search functionality gets data from backend endpoint and updates the recipes state client side
     const handleSearch = async (searchTerm) => {
         try {
-          setLoading(true);
-          setError(null);
-          
-          const response = await fetch(`/api/recipes/search?term=${searchTerm}`);
-          if (!response.ok) {
-            throw new Error('Search failed');
-          }
-          
-          const data = await response.json();
-          setRecipes(data);
+            setLoading(true);
+            setError(null);
+            
+            const response = await axios.get(
+                `http://localhost:3001/recipe/search?term=${searchTerm}`,
+                { headers: { Authorization: cookies.access_token } }
+            );
+            console.log(response.data);
+            setRecipes(response.data);
         } catch (err) {
-          setError('Failed to search recipes');
-          console.error(err);
+            setError('Failed to search recipes');
+            console.error(err);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
+    };
     
     
 

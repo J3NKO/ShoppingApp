@@ -240,6 +240,30 @@ router.delete("/SavedRecipes/:userID/:recipeID", verifyToken, async (req, res) =
     }
 });
 
+// Search Route for HomePage
+router.get("/search", verifyToken, async (req, res) => {
+    try {
+        const searchTerm = req.query.term;
+        if (!searchTerm) {
+            return res.status(400).json({ message: "Search term is required" });
+        }
 
+        const searchRegex = new RegExp(searchTerm, 'i');
+
+        //search for recipes based on name, instructions, or ingredients
+        const recipes = await RecipeModel.find({
+            $or: [
+                { name: searchRegex },
+                { instructions: searchRegex },
+                { ingredients: searchRegex }
+            ]
+        });
+
+        res.json(recipes);
+    } catch (err) {
+        console.error("Search error:", err);
+        res.status(500).json({ message: "Error searching recipes" });
+    }
+});
 
 export {router as RecipeRouter};

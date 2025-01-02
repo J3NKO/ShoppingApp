@@ -3,6 +3,7 @@ import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import {useCookies} from "react-cookie";
 import '../components/componentStyling/shoppingList.css';
+import SearchBar from "../components/SearchBar.js";
 
 
 export const ShoppingList = () => {
@@ -10,8 +11,14 @@ export const ShoppingList = () => {
     const userID = useGetUserID();
     const [cookies, _] = useCookies(["access_token"]);
     const [shoppingList, setShoppingList] = useState([]);
+    const [filteredList, setFilteredList] = useState([]);
     const [sw1tch, setSw1tch] = useState(false); 
-    const [checkedIngredients, setCheckedIngredients] = useState({});
+    const [checkedIngredients, setCheckedIngredients] = useState(() => {
+        const saved = localStorage.getItem('checkedIngredients');
+        return saved ? JSON.parse(saved) : {};
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
 
@@ -27,6 +34,7 @@ export const ShoppingList = () => {
                 
                 
                 setShoppingList(updatedshoppingList);
+                setFilteredList(updatedshoppingList);
 
               } catch (err) {
                 console.error(err);
@@ -72,7 +80,21 @@ export const ShoppingList = () => {
                 const response = await axios.delete(`http://localhost:3001/recipe/shoppingList/${userID}/${recipeID}`, {headers: {Authorization: cookies.access_token}});
                 const newShoppingList = response.data.ShoppingList;
                 
+                setCheckedIngredients(prev => {
+                    const updated = {...prev};
+                    Object.keys(updated).forEach(key => {
+                        if (key.startsWith(`${recipeID}-`)) {
+                            delete updated[key];
+                        }
+                    });
+                    localStorage.setItem('checkedIngredients', JSON.stringify(updated));
+                    return updated;
+                });
+
                 setShoppingList(newShoppingList);
+                setFilteredList(prevFiltered => 
+                    prevFiltered.filter(recipe => recipe._id !== recipeID)
+                );
                 setSw1tch(true);
 
     
@@ -86,15 +108,47 @@ export const ShoppingList = () => {
         }
 
     const handleCheckIngredient = (recipeId, ingredientIndex) => {
-        setCheckedIngredients(prev => ({
-            ...prev,
-            [`${recipeId}-${ingredientIndex}`]: !prev[`${recipeId}-${ingredientIndex}`]
-        }));
+        setCheckedIngredients(prev => {
+            const updated = {
+                ...prev,
+                [`${recipeId}-${ingredientIndex}`]: !prev[`${recipeId}-${ingredientIndex}`]
+            };
+            localStorage.setItem('checkedIngredients', JSON.stringify(updated));
+            return updated;
+        });
+    };
+
+    const handleSearch = async (searchTerm) => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            if (!searchTerm.trim()) {
+                setFilteredList(shoppingList);
+                return;
+            }
+
+            const filtered = shoppingList.filter(recipe => 
+                recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                recipe.ingredients.some(ing => 
+                    ing.name.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+            
+            setFilteredList(filtered);
+        } catch (err) {
+            setError('Failed to search recipes');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="shopping-list">
             <h1>Shopping List</h1>
+            <SearchBar onSearch={handleSearch} />
+            {error && <div className="error-message">{error}</div>}
             <table className="shopping-table">
                 <thead>
                     <tr>
@@ -104,8 +158,8 @@ export const ShoppingList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {(shoppingList || []).length > 0 ? (
-                        shoppingList.map((recipe) => (
+                    {(filteredList || []).length > 0 ? (
+                        filteredList.map((recipe) => (
                             <tr key={recipe._id} className="recipe-row">
                                 <td className="recipe-name">{recipe?.name || "Loading Recipes..."}</td>
                                 <td>

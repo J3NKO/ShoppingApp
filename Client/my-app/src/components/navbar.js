@@ -29,6 +29,7 @@ export const NavBar = () => {
   const logout = () => {
     removeCookies("access_token", { path: "/" }); // Remove the access_token cookie
     window.localStorage.removeItem("userID"); // Remove user ID from localStorage
+    window.localStorage.removeItem("checkedIngredients"); // Remove checkedIngredients from localStorage
     setIsLoggedIn(false); // Update login state
     navigate("/auth"); // Redirect to login/register page
   };

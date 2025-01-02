@@ -3,15 +3,19 @@ import axios from "axios";
 import { useGetUserID } from "../hooks/useGetUserID.js";
 import {useCookies} from "react-cookie";
 import '../components/componentStyling/SavedRecipes.css';
+import SearchBar from "../components/SearchBar.js";
 
 
 export const Saved = () => {
 
     const userID = useGetUserID();
     const [savedRecipes, setsavedRecipes] = useState([]);
+    const [filteredRecipes, setFilteredRecipes] = useState([]);
     const [cookies, _] = useCookies(["access_token"]);
     const [sw1tch, setSw1tch] = useState(false); 
     const [shoppingList, setshoppingList] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
 
     useEffect(() => {
@@ -22,6 +26,7 @@ export const Saved = () => {
                 const response = await axios.get(`http://localhost:3001/recipe/savedRecipes/${userID}` , {headers: {Authorization: cookies.access_token}});
                 const savedRecipesArray = Object.values(response.data).flat(); // Combine all arrays into a single array
                 setsavedRecipes(savedRecipesArray);
+                setFilteredRecipes(savedRecipesArray);
                
               } catch (err) {
                 console.error(err);
@@ -106,20 +111,42 @@ export const Saved = () => {
             const newSavedRecipes = response.data.savedRecipes;
            
             setsavedRecipes(newSavedRecipes);
+            setFilteredRecipes(prevFiltered => 
+                prevFiltered.filter(recipe => recipe._id !== recipeID)
+            );
             setSw1tch(true);
-
-
-        }catch(err){
-
+        } catch(err) {
             console.log(err);
-
         }
-
-
     }
 
 
     const isSavedShoppingList = (id) => Array.isArray(shoppingList) && shoppingList.includes(id);
+
+    const handleSearch = async (searchTerm) => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            if (!searchTerm.trim()) {
+                setFilteredRecipes(savedRecipes);
+                return;
+            }
+
+            const filtered = savedRecipes.filter(recipe => 
+                recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                recipe.instructions.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                recipe.ingredients.some(ing => ing.name.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+            
+            setFilteredRecipes(filtered);
+        } catch (err) {
+            setError('Failed to search recipes');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
 
@@ -128,8 +155,10 @@ export const Saved = () => {
     return (
         <div className="saved-recipes">
             <h1>Saved Recipes</h1>
+            <SearchBar onSearch={handleSearch} />
+            {error && <div className="error-message">{error}</div>}
             <ul className="recipes-grid">
-                {savedRecipes.map((recipe) => (
+                {filteredRecipes.map((recipe) => (
                     <li key={recipe._id} className="recipe-card">
                         <img className="recipe-image" alt={recipe.name} src={recipe.imageURL} />
                         <div className="recipe-content">

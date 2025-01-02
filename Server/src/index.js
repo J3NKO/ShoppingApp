@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose'; //mongodb ORM
-import dotenv from 'dotenv'; //env credneitals
+import dotenv from 'dotenv'; //env credentials
 
 import { userRouter } from './routes/users.js';
 import { RecipeRouter } from './routes/recipes.js';
@@ -36,5 +36,5 @@ mongoose.connect(`mongodb+srv://callumjenko:${process.env.DB_PASSWORD}@shoppinga
 
 //hosting backend on port 3001
 app.listen(3001, 
-    //callback function which runs if list method is called without error
+    //callback function which runs if listen method is called without error
     ()=> console.log("SERVER START UP SUCCESSFUL"));

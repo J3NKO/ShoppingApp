@@ -66,4 +66,7 @@ const RecipeSchema = new mongoose.Schema({
 
 });
 
+// Search functionality index
+RecipeSchema.index({ name: 'text', instructions: 'text', ingredients: 'text' });
+
 export const RecipeModel = mongoose.model("recipes", RecipeSchema);
