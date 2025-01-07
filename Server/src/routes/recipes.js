@@ -243,6 +243,7 @@ router.delete("/SavedRecipes/:userID/:recipeID", verifyToken, async (req, res) =
 // Search Route for HomePage
 router.get("/search", verifyToken, async (req, res) => {
     try {
+        //get search term from URL query
         const searchTerm = req.query.term;
         if (!searchTerm) {
             return res.status(400).json({ message: "Search term is required" });

@@ -14,6 +14,9 @@ export const Home = () => {
     const [cookies, _] = useCookies(["access_token"]); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [ratings, setRatings] = useState({});
+    const [comments, setComments] = useState({});
+    const [recommendations, setRecommendations] = useState([]);
 
 
     useEffect(() => {
@@ -146,6 +149,54 @@ export const Home = () => {
     
 
 
+    const handleRating = async (recipeId, rating) => {
+        try {
+            const response = await axios.post(
+                `http://localhost:3001/recipe/${recipeId}/rate`,
+                { rating, userID },
+                { headers: { Authorization: cookies.access_token } }
+            );
+            setRatings(prev => ({
+                ...prev,
+                [recipeId]: response.data.averageRating
+            }));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleComment = async (recipeId, text) => {
+        try {
+            const response = await axios.post(
+                `http://localhost:3001/recipe/${recipeId}/comment`,
+                { text, userID },
+                { headers: { Authorization: cookies.access_token } }
+            );
+            setComments(prev => ({
+                ...prev,
+                [recipeId]: response.data
+            }));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        const fetchRecommendations = async () => {
+            try {
+                const response = await axios.get(
+                    "http://localhost:3001/recipe/recommendations",
+                    { headers: { Authorization: cookies.access_token } }
+                );
+                setRecommendations(response.data);
+            } catch (err) {
+                console.error("Error fetching recommendations:", err);
+            }
+        };
+
+        fetchRecommendations();
+    }, [savedRecipes]);
+
     return (
         <div className="recipes-container">
             <h1 className="page-title">RECIPES</h1>
@@ -197,10 +248,114 @@ export const Home = () => {
                                     {isSavedShoppingList(recipe._id) ? "Added to List" : "Add to List"}
                                 </button>
                             </div>
+                            <div className="recipe-rating">
+                                <div className="stars">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <span 
+                                            key={star}
+                                            onClick={() => handleRating(recipe._id, star)}
+                                            className={star <= (ratings[recipe._id] || 0) ? 'star-filled' : 'star-empty'}
+                                        >
+                                            ★
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="comments">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Add a comment..."
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') {
+                                                handleComment(recipe._id, e.target.value);
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </li>
                 ))}
             </ul>
+            {recommendations.length > 0 && (
+                <div className="recommendations-section">
+                    <h2>Recommended for You</h2>
+                    <div className="recommendations-grid">
+                        {recommendations.map(recipe => (
+                            <li key={recipe._id} className="recipe-card">
+                                <img 
+                                    className="recipe-image" 
+                                    alt={recipe.name} 
+                                    src={recipe.imageURL}
+                                />
+                                <div className="recipe-content">
+                                    <h2 className="recipe-title">{recipe.name}</h2>
+                                    <div className="recipe-instructions">
+                                        <p>{recipe.instructions}</p>
+                                    </div>
+                                    <div className="recipe-meta">
+                                        <div className="recipe-stat">
+                                            <div>Prep Time</div>
+                                            <strong>{recipe.prepTime}</strong>
+                                        </div>
+                                        <div className="recipe-stat">
+                                            <div>Cook Time</div>
+                                            <strong>{recipe.cookingTime}</strong>
+                                        </div>
+                                        <div className="recipe-stat">
+                                            <div>Veg Count</div>
+                                            <strong>{recipe.vegCount}</strong>
+                                        </div>
+                                        <div className="recipe-stat">
+                                            <div>Fibre</div>
+                                            <strong>{recipe.totalFibre}</strong>
+                                        </div>
+                                    </div>
+                                    <div className="recipe-buttons">
+                                        <button 
+                                            className={`button save-button`}
+                                            disabled={isSaved(recipe._id)}
+                                            onClick={() => saveRecipe(recipe._id)}
+                                        >
+                                            {isSaved(recipe._id) ? "Recipe Saved" : "Save"}
+                                        </button>
+                                        <button 
+                                            className={`button shopping-list-button`}
+                                            disabled={isSavedShoppingList(recipe._id)}
+                                            onClick={() => saveShoppingList(recipe._id)}
+                                        >
+                                            {isSavedShoppingList(recipe._id) ? "Added to List" : "Add to List"}
+                                        </button>
+                                    </div>
+                                    <div className="recipe-rating">
+                                        <div className="stars">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <span 
+                                                    key={star}
+                                                    onClick={() => handleRating(recipe._id, star)}
+                                                    className={star <= (ratings[recipe._id] || 0) ? 'star-filled' : 'star-empty'}
+                                                >
+                                                    ★
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div className="comments">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Add a comment..."
+                                                onKeyPress={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleComment(recipe._id, e.target.value);
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 

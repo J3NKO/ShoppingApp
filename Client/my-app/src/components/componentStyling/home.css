@@ -117,3 +117,47 @@
     grid-template-columns: 1fr;
   }
 } 
+
+.recipe-rating {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.stars {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.star-filled {
+    color: gold;
+    cursor: pointer;
+}
+
+.star-empty {
+    color: #ccc;
+    cursor: pointer;
+}
+
+.comments {
+    margin-top: 1rem;
+}
+
+.comments input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.comment-list {
+    margin-top: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.comment-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+} 

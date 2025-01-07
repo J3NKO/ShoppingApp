@@ -133,6 +133,7 @@ export const Saved = () => {
                 return;
             }
 
+            //converted to lowercase to make the search case insensitive
             const filtered = savedRecipes.filter(recipe => 
                 recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 recipe.instructions.toLowerCase().includes(searchTerm.toLowerCase()) ||
